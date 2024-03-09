@@ -1,0 +1,70 @@
+Tema 2 SDA
+Matei Rares-Andrei
+315CC
+
+Timp implementare: 30 ore
+
+Punctaj obtinut la rularea testelor pe calcullatorul testelor:
+
+Teste - 80/80
+Valgrind - 20/20
+
+Rezolvare:
+
+Pentru imagine am folosit o structura ce retine dimensiunea (este folosit
+un singur camp astfel incat este mentionat ca imaginile primite ca input
+sunt mereu patratice) si matricea de pixeli.
+Pentru a retine mai usor valorile culorilor unui pixel am folosit structura
+pixel.
+Pentru arbore am folosit o structura in care retin tipul de nod, valorile medii
+calculate retinute intr-un pixel si un vector de pointeri la variabile de tip
+arbore pentru fii nodului (in numar de 4).
+nodes[0] -> submatricea stanga sus
+nodes[1] -> submatricea dreapta sus
+nodes[2] -> submatricea dreapta jos
+nodes[3] -> submatricea stanga jos
+
+Pentru cerintele 1 si 2 am folosit functiile:
+
+- ppm_file_read - citeste header-ul fisierului ppm si matricea de pixeli;
+- build_arb_from_image - primeste coordonatele (line si col) pixelului din
+  stanga sus ale unei submatrici si dimensiunea acesteia (size) si apeleaza
+  functia is_leaf (implementare a formulelor din enunt) care returneaza 1 daca
+  submatricea poate fi reprezentata ca o frunza in arbore (+ retine culorile
+  medii obtinute), sau 0 in caz contrar. In cazul in care nu este frunza,
+  submatricea este impartita in 4 zone de dimensiune egala si este apelata
+  functia build_arb_from_image pentru fiecare;
+
+Pentru informatiile cerute la cerinta 1 am folosit functiile:
+
+- get_arb_levels_number - parcurge arborele si retine nivelul maxim gasit
+- get_leaf_number - numara fiecare frunza si returneaza rezultatul
+- get_top_leaf_level - parcurge arborele si retine nivelul cel mai mic
+  ce contine o frunza
+  Cu cat o zona este mai mare, cu atat aceasta este divizata de mai putine ori.
+  Astfel, prin interpretarea nivelelor din arbore drept numarul de divizari
+  aplicate unei zone din imagine, o frunza aflata sus in arbore acopera o
+  submatrice de dimensiuni mari. Dimensiunea zonei este determina prin formula
+  dim_max = max(dim_max, image_size / (2 ^ leaf_niv))
+
+Pentru rezolvarea cerintei 2 am folosit functiile:
+
+- print_pixel - afiseaza datele retinute intr-un pixel
+- print_arb_node - afiseaza datele retinute intr-un nod din arbore
+- print_arb - foloseste o coada in care initial se afla doar radacina
+  arborelui. Cat timp coada nu e goala, afiseaza primul nod, introduce fii
+  acestuia in coada daca nu e frunza si sterge primul nod din coada.
+
+Pentru rezolvarea cerintei 3 am folosit functiie:
+
+- compressed_file_read - citeste datele din fisierul .out si le retine
+  intr-o coada
+- build_arb_from_queue - parcurg coada cu doi pointeri, q->head si current.
+  Cand gasesc un nod care nu e frunza, atunci urmatoarele 4 noduri sunt fii
+  acestuia. Parcurgerea celor 4 este facuta cu pointer-ul current.
+- build_image_from_arb - parcurg arborele si pentru fiecare frunza atribui
+  submatricii pe care o reprezinta valorile retinute in campul pixel. Pentru
+  noduri intermediare aplic functia pentru fiecare fiu al nodului respectiv.
+- build_image_from_compressed_file - apeleaza functiile de mai sus
+- print_image - afiseaza formatul fisierului ppm (P6), dimensiunile imaginii,
+  valoarea maxima pentru culori (255) si matricea de pixeli obtinuta
